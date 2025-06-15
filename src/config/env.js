@@ -13,6 +13,7 @@ const config = {
   DB_PASSWORD: process.env.DB_PASSWORD,
   DB_DATABASE: process.env.DB_DATABASE,
   DB_DIALECT: process.env.DB_DIALECT,
+  BCYRPR_SALT_ROUNDS: +process.env.BCYRPR_SALT_ROUNDS,
 };
 
 export default config;
