@@ -14,6 +14,10 @@ export const User = sequelize.define("users", {
   username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: {
+      args: true,
+      msg: "Username already exists",
+    },
     validate: {
       notNull: {
         msg: "Username is required",

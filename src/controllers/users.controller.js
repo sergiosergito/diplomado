@@ -19,8 +19,8 @@ async function getUsers(req, res) {
 }
 
 async function createUser(req, res) {
-  const body = req.body;
-  body.username = req.body.username;
+  console.log("Entro al controlador");
+  console.log(req.body);
   const { username, password } = req.body;
   try {
     const user = await User.create({
