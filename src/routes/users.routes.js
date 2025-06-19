@@ -10,4 +10,11 @@ router
   .get(userController.getUsers)
   .post(validate(createUserSchema, "body"), userController.createUser);
 
+router
+  .route("/:id")
+  .get(userController.getUser)
+  .put(userController.updateUser)
+  .delete(userController.deleteUser)
+  .patch(userController.activateInactivate);
+
 export default router;
