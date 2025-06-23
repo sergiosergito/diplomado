@@ -3,7 +3,6 @@ import { sequelize } from "../database/database.js";
 import { Status } from "../constants/index.js";
 import { Task } from "./task.js";
 import { encriptar } from "../common/bcrypt.js";
-import logger from "../logs/logger.js";
 
 export const User = sequelize.define("users", {
   id: {
@@ -53,7 +52,14 @@ User.beforeCreate(async (user) => {
   try {
     user.password = await encriptar(user.password);
   } catch (error) {
-    logger.error(error.message);
-    throw new Error("Error al encriptar antes de crear");
+    next(error);
+  }
+});
+
+User.beforeUpdate(async (user) => {
+  try {
+    user.password = await encriptar(user.password);
+  } catch (error) {
+    next(error);
   }
 });
