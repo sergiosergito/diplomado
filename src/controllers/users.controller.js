@@ -1,6 +1,7 @@
 import { User } from "../models/user.js";
 import { Status } from "../constants/index.js";
 import { encriptar } from "../common/bcrypt.js";
+import { Task } from "../models/task.js";
 
 async function getUsers(req, res, next) {
   try {
@@ -18,8 +19,6 @@ async function getUsers(req, res, next) {
 }
 
 async function createUser(req, res, next) {
-  console.log("Entro al controlador");
-  console.log(req.body);
   const { username, password } = req.body;
   try {
     const user = await User.create({
@@ -36,9 +35,6 @@ async function getUser(req, res, next) {
   try {
     const userIdFromToken = req.user.userId;
     const requestedId = parseInt(req.params.id);
-    console.log("ID en token (req.user.userId):", req.user?.userId);
-    console.log("ID solicitado (req.params.id):", req.params.id);
-
     // Solo permitir acceso si el ID del token coincide con el solicitado
     if (userIdFromToken !== requestedId) {
       return res.status(403).json({ message: "Access denied" });
@@ -53,23 +49,6 @@ async function getUser(req, res, next) {
   } catch (error) {
     next(error);
   }
-  /*
-  const { id } = req.params;
-  try {
-    const user = await User.findOne({
-      attributes: ["username", "password", "status"],
-      where: {
-        id,
-      },
-    });
-    if (!user) {
-      res.status(404).json({ message: "User not found" });
-    }
-    res.json(user);
-  } catch (error) {
-    next(error);
-  }
-    */
 }
 
 async function updateUser(req, res, next) {
@@ -135,6 +114,30 @@ async function activateInactivate(req, res, next) {
   }
 }
 
+async function getTasks(req, res, next) {
+  const { id } = req.params;
+  try {
+    const user = await User.findOne({
+      attributes: ["username"],
+      include: [
+        {
+          model: Task,
+          attributes: ["name", "done"],
+          where: {
+            done: false,
+          },
+        },
+      ],
+      where: {
+        id,
+      },
+    });
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+}
+
 export default {
   getUsers,
   createUser,
@@ -142,4 +145,5 @@ export default {
   updateUser,
   deleteUser,
   activateInactivate,
+  getTasks,
 };
